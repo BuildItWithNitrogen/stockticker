@@ -25,7 +25,9 @@ body_right() ->
 
 event(get_quotes) ->
     Symbol = wf:q(symbol),
-    get_and_insert_quote(Symbol).
+    wf:comet(fun() ->
+        get_and_insert_quote(Symbol)
+    end).
 
 get_and_insert_quote(Symbol) ->
     Quote = stock:lookup(Symbol),
@@ -37,4 +39,7 @@ get_and_insert_quote(Symbol) ->
         "): ",
         Quote
     ]},
-    wf:insert_top(quotes, Body).
+    wf:insert_top(quotes, Body),
+    wf:flush(),
+    timer:sleep(10000),
+    get_and_insert_quote(Symbol).
