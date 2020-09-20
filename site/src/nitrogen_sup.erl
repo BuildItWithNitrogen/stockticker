@@ -26,6 +26,7 @@ init([]) ->
     application:start(simple_cache),
     application:start(crypto),
     application:start(nprocreg),
+    application:start(inets),
     application:start(simple_bridge),
 
     {ok, { {one_for_one, 5, 10}, []} }.
