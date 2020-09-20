@@ -24,10 +24,16 @@ body_right() ->
     #panel{id=quotes}.
 
 event(get_quotes) ->
+    OldPid = wf:state(stock_pid),
+    maybe_kill(OldPid),
     Symbol = wf:q(symbol),
-    wf:comet(fun() ->
+    {ok, Pid} = wf:comet(fun() ->
         get_and_insert_quote(Symbol)
-    end).
+    end),
+    wf:state(stock_pid, Pid).
+
+maybe_kill(undefined) -> ok;
+maybe_kill(Pid) -> erlang:exit(Pid, kill).
 
 get_and_insert_quote(Symbol) ->
     Quote = stock:lookup(Symbol),
