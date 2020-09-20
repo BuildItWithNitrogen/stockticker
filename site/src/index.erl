@@ -8,7 +8,16 @@ main() ->
 title() ->
     "Home".
 
+notify() ->
+    receive
+        {favorite, Symbol} ->
+            wf:flash(wf:f("A user has favorited the symbol ~s", [Symbol]))
+    end,
+    wf:flush(),
+    ?MODULE:notify().
+
 body_left() ->
+    wf:comet_global(fun notify/0, stock_notify),
     [
      #label{text="Stock Symbol"},
      #textbox{id=symbol, class='form-control'},
@@ -47,6 +56,7 @@ favorite_button(Symbol) ->
       }.
 
 add_favorite(Symbol) ->
+    wf:send_global(stock_notify, {favorite, Symbol}),
     Favorites = wf:session_default(favorites, []),
     NewFavorites = [Symbol | Favorites],
     wf:session(favorites, NewFavorites).
