@@ -4,7 +4,16 @@
 
 menu() ->
     Items = menu_items(),
-    menu_bind(Items).
+    menu_map(Items).
+
+menu_map(Items) ->
+    #list{class='navbar-nav',body=[
+        lists:map(fun({Label, Url}) ->
+            #listitem{class='nav-item', body=[
+                #link{class='nav-link', text=Label, url=Url}
+            ]}
+        end, Items)
+    ]}.
 
 menu_bind(Items) ->
     Map = {menu_link@text, menu_link@url},
