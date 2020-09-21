@@ -4,7 +4,17 @@
 
 menu() ->
     Items = menu_items(),
-    menu_map(Items).
+    menu_list_comp(Items).
+
+menu_list_comp(Items) ->
+    #list{class='navbar-nav',body=[
+        [draw_item(Item) || Item <- Items]
+    ]}.
+
+draw_item({Label, Url}) ->
+    #listitem{class='nav-item', body=[
+        #link{class='nav-link', text=Label, url=Url}
+    ]}.
 
 menu_map(Items) ->
     #list{class='navbar-nav',body=[
